@@ -1,1 +1,32 @@
-<h1>Hello world</h1>
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Ruby Mining</title>
+<link rel="stylesheet" href="mines.css">
+</head>
+<body>
+<h1>Ruby Mining</h1>
+<details><summary>What, why, and all those other questions?</summary>
+<p>Hunt for rubies. It's like minesweeper, you know, except that you have to
+not destroy any of the things you're looking for. Also, we guarantee that the
+game can be solved with pure logic - no guesswork required.</p>
+<p>This is basically an 'excuse plot' for me learning Ruby on Rails :)</p>
+</details>
+<main>
+<div id=game_status></div>
+<table id=board></table>
+<div><button type=button id=hint>Hint</button> <span id=hint_text></span></div>
+<div id=highlight_text></div>
+</main>
+<details><summary>New game</summary>
+TODO: Make this tidier... also, add a custom option
+<ul>
+<li><button type=button class=newgame data-height=8 data-width=8 data-mines=12>Easy: 8x8, 12 mines</button></li>
+<li><button type=button class=newgame data-height=15 data-width=15 data-mines=50>Medium: 15x15, 50 mines</button></li>
+<li><button type=button class=newgame data-height=20 data-width=20 data-mines=100>Dense: 20x20, 100 mines</button></li>
+<li><button type=button class=newgame data-height=30 data-width=30 data-mines=200>Tedious: 30x30, 200 mines</button></li>
+</ul>
+</details>
+<script type=module src="mines.js"></script>
+</body>
+</html>
