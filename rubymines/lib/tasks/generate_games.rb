@@ -159,13 +159,14 @@ while true
 	height, width, mines = makeme
 	# if mines * 4 > height * width: remove this entry from requests and bail
 	# shouldn't happen, guard in the web server
+	print("Generating ", height, "x", width, " with ", mines, " mines\n")
 	for try in 1..10000 do
 		game, mines_placed = generate_game(height, width, mines)
 		dig(game, 0, 0);
 		break if try_solve(game, mines)
 	end
 	# Cool! We got a game. Save it to the database.
-	print(game, "\n")
+	print("Got a game in ", try, " tries\n")
 	ActiveRecord::Base.transaction {
 		g = Game.create(height:height, width:width, mines:mines)
 		# TODO: As per elsewhere, rename this to r,c instead of x,y
