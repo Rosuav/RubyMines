@@ -4,7 +4,7 @@ class GamesController < ApplicationController
 		# If there's no game matching that, this will return null. The front end should establish
 		# a websocket to await an available game.
 		if not game
-			# TODO: Add it to Requests if not already there
+			Request.create(height:params[:height], width:params[:width], mines:params[:mines])
 			render json: nil # Signal the front end that we don't (yet) have a game
 			return
 		end
