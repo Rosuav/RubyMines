@@ -11,3 +11,5 @@ Static files in public/ can be accessed directly. Not sure what takes precedence
 $ bin/rails generate model Game width:integer height:integer mines:integer
 $ bin/rails db:migrate
 - then check db/schema.rb to see if it swallowed the rest of the db again
+
+$ bin/rails r lib/tasks/generate_games.rb
