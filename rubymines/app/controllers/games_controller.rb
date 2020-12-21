@@ -4,7 +4,8 @@ class GamesController < ApplicationController
 		# If there's no game matching that, this will return null. The front end should establish
 		# a websocket to await an available game.
 		if not game
-			render json: nil
+			# TODO: Add it to Requests if not already there
+			render json: nil # Signal the front end that we don't (yet) have a game
 			return
 		end
 		game = game.as_json
@@ -13,7 +14,10 @@ class GamesController < ApplicationController
 		# Note that these are really [r,c] not [x,y]. TODO: Learn migrations and fix these names.
 		Mine.where(game_id: game["id"]).each do | mine | game["mines"].append([mine["x"], mine["y"]]) end
 		# assert game["mines"].length == Integer(params[:mines])
-		# TODO: Delete this game and its mines (not done in development b/c easier to not recreate)
+		ActiveRecord::Base.transaction {
+			Mine.where(game_id: game["id"]).delete_all
+			Game.where(id: game["id"]).delete_all
+		}
 		render json: game.to_json
 	end
 end
