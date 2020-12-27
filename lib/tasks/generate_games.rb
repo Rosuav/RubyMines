@@ -156,10 +156,10 @@ while true
 		having count(games.id) < 3')
 	makeme = needed.values.sample
 	break unless makeme
-	height, width, mines = makeme
+	height, width, mines, avail = makeme
 	# if mines * 4 > height * width: remove this entry from requests and bail
 	# shouldn't happen, guard in the web server
-	print("Generating ", height, "x", width, " with ", mines, " mines\n")
+	print("Generating ", height, "x", width, " with ", mines, " mines - have ", avail, " already\n")
 	for try in 1..10000 do
 		game, mines_placed = generate_game(height, width, mines)
 		dig(game, 0, 0);
@@ -172,6 +172,10 @@ while true
 		g = Game.create(height:height, width:width, mines:mines)
 		# TODO: As per elsewhere, rename this to r,c instead of x,y
 		Mine.insert_all(mines_placed.map { |rc| ({game_id: g.id, x: rc[0], y: rc[1]}) } )
+		if avail == 2 then
+			# This is the third. Clean out the requests for this type.
+			Request.where(height: height, width: width, mines: mines).delete_all
+		end
 	}
 	print("Saved!\n")
 end

@@ -11,6 +11,8 @@ class GamesController < ApplicationController
 				puts "Have thread"
 			else
 				puts "Didn't have thread"
+				# TODO: Spin this off as a separate process - maybe a Heroku task when
+				# on prod - as this is CPU-bound and causes problems.
 				$generate_thread = Thread.new { load File.join(Rails.root, 'lib', 'tasks', 'generate_games.rb') }
 			end
 			render json: nil # Signal the front end that we don't (yet) have a game
