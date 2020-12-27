@@ -165,6 +165,7 @@ while true
 		dig(game, 0, 0);
 		break if try_solve(game, mines)
 	end
+	# TODO: Make sure we actually DID get a game. If we gave up... what?
 	# Cool! We got a game. Save it to the database.
 	print("Got a game in ", try, " tries\n")
 	ActiveRecord::Base.transaction {
