@@ -1,3 +1,5 @@
+require 'rake'
+
 class GamesController < ApplicationController
 	def fetch
 		game = Game.find_by(height:params[:height], width:params[:width], mines:params[:mines])
@@ -5,6 +7,12 @@ class GamesController < ApplicationController
 		# a websocket to await an available game.
 		if not game
 			Request.create(height:params[:height], width:params[:width], mines:params[:mines])
+			if $generate_thread and $generate_thread.alive?
+				puts "Have thread"
+			else
+				puts "Didn't have thread"
+				$generate_thread = Thread.new { load File.join(Rails.root, 'lib', 'tasks', 'generate_games.rb') }
+			end
 			render json: nil # Signal the front end that we don't (yet) have a game
 			return
 		end
