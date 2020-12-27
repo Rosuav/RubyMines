@@ -149,6 +149,10 @@ def try_solve(game, totmines)
 end
 
 while true
+	# NOTE: If there are multiple requests for the same pattern, there will be multiple
+	# chances to pick that pattern. This means popular patterns will be more likely to
+	# be generated first. (Once there are three games for a pattern, all its requests
+	# will be cleaned out.)
 	needed = ActiveRecord::Base.connection.execute('
 		select requests.height, requests.width, requests.mines, count(games.id) as avail from requests left join games on
 		requests.height = games.height and requests.width = games.width and requests.mines = games.mines
