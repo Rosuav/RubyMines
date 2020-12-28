@@ -326,13 +326,23 @@ DOM("#hint").onclick = ev => {
 	}
 };
 
+let ws = null;
 async function new_game(height, width, mines) {
 	if (mines * 4 > height * width) {
 		console.error("Too many mines (TODO: handle this better)");
 		return;
 	}
+	if (ws) ws.close(); //Cancel any pending requests
 	const data = await (await fetch(`/game/${height}/${width}/${mines}`)).json();
-	if (!data) {console.log("Couldn't find a game. TODO: Wait for the server."); return;}
+	if (!data) {
+		console.log("Couldn't get a game; asking server to notify us.");
+		set_content("#game_status", "Generating game, please wait...");
+		const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+		ws = new WebSocket(protocol + window.location.host + "/websocket");
+		ws.onmessage = ws_message;
+		ws.onopen = () => ws.send(JSON.stringify({type: "wait", height, width, mines}));
+		return;
+	}
 	game = [];
 	for (let r = 0; r < height; ++r) {
 		const row = [];
@@ -365,6 +375,16 @@ async function new_game(height, width, mines) {
 	}
 	set_content(board, table);
 }
+
+function ws_message(msg) {
+	console.log(msg)
+	msg = JSON.parse(msg.data);
+	if (msg.type === "generated") {
+		//TODO: Check that the height/width/mines is what we last asked for
+		new_game(msg.height, msg.width, msg.mines);
+	}
+}
+
 //Dump a game ready for testing
 function dump_game() {console.log(JSON.stringify(game.map(row => row.map(cell => cell > 9 ? cell - 10 : cell))));}
 

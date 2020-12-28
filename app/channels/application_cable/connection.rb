@@ -11,6 +11,14 @@ module ApplicationCable
 			puts message
 			puts "\n"
 			if message["type"] == "wait" then
+				game = Game.find_by(height:message["height"], width:message["width"], mines:message["mines"])
+				if game then
+					puts "Got game already"
+					# Seems like we have games already. Don't wait; just report ready.
+					transmit type: "generated", height: message["height"], width: message["width"], mines: message["mines"]
+					return
+				end
+				puts "No game, waiting"
 				$clients_waiting = {} unless $clients_waiting
 				key = [message["height"], message["width"], message["mines"]]
 				$clients_waiting[key] = [] unless $clients_waiting[key]

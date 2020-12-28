@@ -186,7 +186,8 @@ while true
 	if $clients_waiting and $clients_waiting[key] then
 		for client in $clients_waiting[key] do
 			puts "Client is waiting..."
-			client.transmit(type: "generated")
+			client.transmit(type: "generated", height: height, width: width, mines: mines)
 		end
 	end
+	puts "Done notifying, back to loop"
 end
