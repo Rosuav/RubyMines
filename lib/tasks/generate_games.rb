@@ -156,7 +156,7 @@ while true
 	needed = ActiveRecord::Base.connection.execute('
 		select requests.height, requests.width, requests.mines, count(games.id) as avail from requests left join games on
 		requests.height = games.height and requests.width = games.width and requests.mines = games.mines
-		group by requests.height, requests.width, requests.mines
+		group by requests.id
 		having count(games.id) < 3')
 	makeme = needed.values.sample
 	break unless makeme
