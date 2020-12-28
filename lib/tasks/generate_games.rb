@@ -182,4 +182,11 @@ while true
 		end
 	}
 	print("Saved!\n")
+	key = [height, width, mines]
+	if $clients_waiting and $clients_waiting[key] then
+		for client in $clients_waiting[key] do
+			puts "Client is waiting..."
+			client.transmit(type: "generated")
+		end
+	end
 end
