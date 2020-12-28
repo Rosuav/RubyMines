@@ -23,11 +23,15 @@ class GamesController < ApplicationController
 		# TODO: Simplify this down. I just want to fetch all the [x,y] pairs for this game.
 		# Note that these are really [r,c] not [x,y]. TODO: Learn migrations and fix these names.
 		Mine.where(game_id: game["id"]).each do | mine | game["mines"].append([mine["x"], mine["y"]]) end
-		# assert game["mines"].length == Integer(params[:mines])
 		ActiveRecord::Base.transaction {
 			Mine.where(game_id: game["id"]).delete_all
 			Game.where(id: game["id"]).delete_all
 		}
+		# If something's gone wrong - maybe some other client already deleted this game
+		# or the game was borked - then delete the game as normal, but return as if we
+		# didn't have one. TODO: Start the generator thread if needed. Or just rerun the
+		# entire fetch logic, maybe.
+		render json: nil unless game["mines"].length == Integer(params[:mines])
 		render json: game.to_json
 	end
 end
